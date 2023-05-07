@@ -5,10 +5,12 @@
 #include<string>
 #include<sstream>
 #include"render.h"
+#include"VertexBufferLayout.h"
 #include"IndexBuffer.h"
 #include"VertexBuffer.h"
 #include"VertexArray.h"
 #include"Shader.h"
+
 
 int main(void)
 {
@@ -47,9 +49,9 @@ int main(void)
             0,1,2,
             2,3,0
         };
-        unsigned int vao;
-        GLCall(glGenVertexArrays(1, &vao));
-        GLCall(glBindVertexArray(vao));
+        //unsigned int vao;
+        //GLCall(glGenVertexArrays(1, &vao));
+        //GLCall(glBindVertexArray(vao));
 
         VertexArray va;
         VertexBuffer vb(position, 4 * 2 * sizeof(float));
@@ -70,6 +72,7 @@ int main(void)
         shader.UnBind();
         vb.UnBind();
         ib.UnBind();
+        Renderer renderer;
 
         float red = 0.0f;
         float step = 0.05f;
@@ -77,13 +80,12 @@ int main(void)
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
-            glClear(GL_COLOR_BUFFER_BIT);
+            renderer.Clear();
             shader.Bind();
             shader.SetUniform4f("u_color", red, 0.3f, 0.8f, 1.0f);
            
-            va.Bind();
-            ib.Bind();
-            GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+            renderer.Draw(va, ib, shader);
+           
 
             if (red > 1.0f)
                 step = -0.05f;
